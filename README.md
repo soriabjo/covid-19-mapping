@@ -11,11 +11,11 @@ For the Covid-19 cases by county map, simply click on a proportional symbol to r
 
 ## Links/Screenshot
 
-[Choropleth - Map 1 (Rates)]()
+[Choropleth - Map 1 (Rates)](https://github.com/soriabjo/covid-19-mapping/blob/main/img/choropleth.jpg)
 
 ![1](img\choropleth.jpg)
 
-[Proportional Symbol - Map 2 (Cases)]()
+[Proportional Symbol - Map 2 (Cases)](https://github.com/soriabjo/covid-19-mapping/blob/main/img/propsymbol.jpg)
 
 ![2](img\propsymbol.jpg)
 
