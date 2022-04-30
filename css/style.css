@@ -1,0 +1,93 @@
+h1 {
+    font-size: 28px;
+    text-align: center;
+}
+p {
+    margin: 10px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+.map-overlay {
+    position: absolute;
+    bottom: -50;
+    left: 10;
+    background: rgb(255, 255, 255);
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.2);
+    margin-left: 10px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    overflow: auto;
+    border-radius: 3px;
+}
+
+#title-box {
+    top: 0;
+    height: 102px;
+    margin-top: 20px;
+    width: 350px;
+}
+
+#credits {
+    top: 850px;
+    height: 74px;
+    bottom: 400px;
+    left: 0px;
+    margin-top: 20px;
+    width: 500px;
+    text-align: left;
+}
+
+#instructions {
+    top: 350px;
+    height: 104px;
+    bottom: 400px;
+    left: 0px;
+    margin-top: 20px;
+    width: 150px;
+    text-align: center;
+    font-size: 30;
+}
+
+#legend {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 150px;
+    background: rgb(255, 255, 255);
+    margin-left: 1700px;
+    margin-bottom: 40px;
+    padding: 10px 20px 10px 10px;
+    border-radius: 3px;
+    text-align: left;
+}
+
+.break {
+    position: relative;
+    margin: 0px;
+    padding: 0px;
+}
+
+.dot {
+    display: inline-block;
+    margin-top: 5px;
+    border-radius: 50%;
+    opacity: 0.8;
+}
+
+.dot-label {
+    position: absolute;
+    top: 0;
+    right: 0;
+}

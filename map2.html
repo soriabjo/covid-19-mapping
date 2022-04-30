@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>2020 United States Covid Cases</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js"></script>
+    <style>
+        h1 {
+            font-size: 28px;
+            text-align: center;
+        }
+        p {
+            margin: 10px;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .map-overlay {
+            position: absolute;
+            bottom: -50;
+            left: 10;
+            background: rgb(255, 255, 255);
+            border-style: solid;
+            border-width: 1px;
+            border-color: rgba(255, 255, 255, 0.2);
+            margin-left: 10px;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            overflow: auto;
+            border-radius: 3px;
+        }
+
+        #title-box {
+            top: 0;
+            height: 102px;
+            margin-top: 20px;
+            width: 350px;
+        }
+
+        #credits {
+            top: 850px;
+            height: 74px;
+            bottom: 400px;
+            left: 0px;
+            margin-top: 20px;
+            width: 500px;
+            text-align: left;
+        }
+
+        #instructions {
+            top: 350px;
+            height: 104px;
+            bottom: 400px;
+            left: 0px;
+            margin-top: 20px;
+            width: 150px;
+            text-align: center;
+            font-size: 30;
+        }
+
+        #legend {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 150px;
+            background: rgb(255, 255, 255);
+            margin-left: 1700px;
+            margin-bottom: 40px;
+            padding: 10px 20px 10px 10px;
+            border-radius: 3px;
+            text-align: left;
+        }
+
+        .break {
+            position: relative;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .dot {
+            display: inline-block;
+            margin-top: 5px;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        .dot-label {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <div class="map-overlay" id="title-box">
+        <h1>2020 United States Covid Counts by County</h1>
+    </div>
+    <div class="map-overlay" id="credits">
+        <h1>Bjorn S. | GEOG458</h1>
+    </div>
+    <div class="map-overlay" id="instructions">
+        <h3>Click on a circle to see exact cases!</h3>
+    </div>
+    <div class="map-overlay" id="legend"></div>
+
+    <script>
+        mapboxgl.accessToken =
+            'pk.eyJ1IjoibXVsbGVwZCIsImEiOiJjbDJhcXJ2eHcwN3lhM2tsaHY2OWJwaXM5In0.LkmFGu5dcDQA7Sf8XggggA';
+        let map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/light-v10',
+            zoom: 4,
+            center: [-100.8242, 41.2159],
+            projection: {
+                name: 'albers',
+                center: [-98.1353, 40.4251]
+            }
+        });
+
+        const grades = [1000, 2000, 4000, 10000, 20000],
+            radius = [1, 2, 4, 10, 25],
+            colors = ['#fef0d9', '#fdcc8a', '#fc8d59', '#e34a33', '#b30000']
+
+        map.on('load', () => {
+            map.addSource('counts', {
+                type: 'geojson',
+                data: 'assets/us-covid-2020-counts.geojson'
+            });
+
+            map.addLayer({
+                    'id': 'cases-point',
+                    'type': 'circle',
+                    'source': 'counts',
+                    'minzoom': 3,
+                    'paint': {
+                        'circle-color': {
+                            'property': 'cases',
+                            'stops': [
+                                [grades[0], colors[0]],
+                                [grades[1], colors[1]],
+                                [grades[2], colors[2]],
+                                [grades[3], colors[3]],
+                                [grades[4], colors[4]]
+                            ]
+                        },
+                        'circle-stroke-width': 1,
+                        'circle-stroke-color': '#636363',
+                        'circle-opacity': 0.5,
+                        'circle-radius': {
+                            'property': 'cases',
+                            'stops': [
+                                [grades[0], radius[0]],
+                                [grades[1], radius[1]],
+                                [grades[2], radius[2]],
+                                [grades[3], radius[3]],
+                                [grades[4], radius[4]]
+                            ]
+                        }
+                    }
+                }
+            );
+
+            map.on('click', 'cases-point', (event) => {
+                new mapboxgl.Popup()
+                    .setLngLat(event.features[0].geometry.coordinates)
+                    .setHTML(`<strong>Total Cases:</strong> ${event.features[0].properties.cases}`)
+                    .addTo(map);
+            });
+        });
+
+        const layers = [
+            '0-2000',
+            '2001-5000',
+            '5001-1000',
+            '10001-20000',
+            '20001+'
+        ]
+
+        const legend = document.getElementById('legend');
+        var labels = ['<strong><center>Cases by County</center></strong>'], vbreak;
+        for (var i = 0; i < layers.length; i++) {
+            vbreak = layers[i]
+            dot_radius = 2 * radius[i];
+            labels.push(
+                '<p class="break"><i class="dot" style="background:' + colors[i] + '; width: ' + dot_radius +
+                'px; height: ' + dot_radius + 'px; "></i> <span class="dot-label" style="top: ' + dot_radius / 2 + 'px;">' + vbreak + '</span></p>');
+        }
+        const source =
+            '<p style="text-align: center; font-size:10pt">Source: <a href="https://github.com/nytimes/covid-19-data/blob/43d32dde2f87bd4dafbb7d23f5d9e878124018b8/live/us-counties.csv">The New York Times</a></p>';
+
+        legend.innerHTML = labels.join('') + source;
+    </script>
+</body>
+</html>
